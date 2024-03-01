@@ -8,32 +8,26 @@ function Person(weight, height) {
 
 function Dietician(height, weight) {
   Person.call(this, height, weight);
-  this.imc = function (callback) {
-    callback({
-      height: 1.9,
-      weight: 88,
-      imc: "24.38",
-      imcDescription: "normal",
-    });
-  };
 }
 Dietician.prototype = Object.create(Person.prototype);
 Dietician.prototype.constructor = Dietician;
 
 // popula o span IMC
-function populateImcData(dietician) {
-  dietician.imc(function (person) {
-    var text = person.imc + ", ou seja, " + person.imcDescription;
-    document.querySelector("#imc").innerHTML = text;
-  });
+function populateImcData(dietician, req) {
+    sendXmlHttpRequest(req, dietician);
 }
 
 function callPopulateImcDataBuilder() {
   var weightEl = document.querySelector("input#peso");
   var heightEl = document.querySelector("input#altura");
+  var xmlHttpReq = createXmlHttpRequest();
+  prepareXmlHttpRequest(xmlHttpReq, function (person) {
+    var text = person.imc + ", ou seja, " + person.imcDescription;
+    document.querySelector("#imc").innerHTML = text;
+  });
 
   return function () {
-    populateImcData(new Dietician(weightEl.value, heightEl.value));
+    populateImcData(new Dietician(weightEl.value, heightEl.value), xmlHttpReq);
   };
 }
 
